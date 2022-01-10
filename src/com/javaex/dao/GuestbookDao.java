@@ -167,6 +167,38 @@ public class GuestbookDao {
 		this.close();
 	}
 	
+	
+	public int delete(GuestbookVo vo) {
+		
+		int count = 0;
+		this.getConnection();
+		
+		try {
+			
+			String query = "";
+			query += " delete from guestbook ";
+			query += " where no = ? ";
+			query += " and password = ? ";
+			
+			pstmt = conn.prepareStatement(query);
+			
+			pstmt.setInt(1, vo.getNo());
+			pstmt.setString(2, vo.getPassword());
+			
+			count = pstmt.executeUpdate();
+			
+			System.out.println(count + "건이 삭제되었습니다.");
+			
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		}
+		
+		this.close();
+		
+		return count;
+	}
+	 
+	
 	public GuestbookVo getGuest(int no) {
 		
 		GuestbookVo gvo = null;

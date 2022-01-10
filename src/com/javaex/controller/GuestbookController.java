@@ -49,11 +49,19 @@ public class GuestbookController extends HttpServlet {
 			int no = Integer.parseInt(request.getParameter("no"));
 			String passwordDelForm = request.getParameter("passwordDelForm");
 			
+			/*
+			GuestbookVo vo = new GuestbookVo();
+			vo.setNo(no);
+			vo.setPassword(password);
+			
+			GuestbookDao guestbookDao = new GuestbookDao();
+			guestbookDao.deleteGuest(vo);
+			 */
+			
 			GuestbookDao guestbookDao = new GuestbookDao();
 			GuestbookVo gvo = guestbookDao.getGuest(no);
 			
 			if(passwordDelForm.equals(gvo.getPassword())) {
-				
 				System.out.println("비밀번호가 일치합니다.");
 				guestbookDao.deleteGuest(no);
 			} 
