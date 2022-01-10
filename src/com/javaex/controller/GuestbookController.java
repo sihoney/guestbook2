@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.javaex.dao.GuestbookDao;
+import com.javaex.util.WebUtil;
 import com.javaex.vo.GuestbookVo;
 
 
@@ -20,63 +21,60 @@ public class GuestbookController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		System.out.println("controller");
+		//request.setCharacterEncoding("UTF-8");
 		String action = request.getParameter("action");
 		
-		if("addList".equals(action)) {
-			System.out.println(action);
-			
-			GuestbookDao guestbookDao = new GuestbookDao();
-			List<GuestbookVo> list = guestbookDao.getList();
-			
-			request.setAttribute("gList", list);
-
-			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/addList.jsp");
-			rd.forward(request, response);
-		}
-		else if("add".equals(action)) {
-			System.out.println(action);
-			
-			GuestbookDao guestbookDao = new GuestbookDao();
-			
+		if("add".equals(action)) {
+						
 			String name = request.getParameter("name");
 			String password = request.getParameter("password");
 			String content = request.getParameter("content");
 			
+			GuestbookDao guestbookDao = new GuestbookDao();
 			GuestbookVo gvo = new GuestbookVo(name, password, content);
-			
 			guestbookDao.addGuest(gvo);
 			
-			response.sendRedirect("/guestbook2/gbc?action=addList");
+			// redirect
+			WebUtil.redirect(request, response, "/guestbook2/gbc");
+			
 		}
 		else if("deleteForm".equals(action)) {
-			System.out.println(action);
 			
-			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/deleteForm.jsp");
-			rd.forward(request, response);
+			// forward
+			WebUtil.forward(request, response, "/WEB-INF/deleteForm.jsp");
+			
 		}
 		else if("delete".equals(action)) {
-			System.out.println(action);
-			
+
 			int no = Integer.parseInt(request.getParameter("no"));
 			String passwordDelForm = request.getParameter("passwordDelForm");
 			
 			GuestbookDao guestbookDao = new GuestbookDao();
-			
 			GuestbookVo gvo = guestbookDao.getGuest(no);
 			
 			if(passwordDelForm.equals(gvo.getPassword())) {
-				System.out.println("비밀번호가 일치합니다.");
 				
+				System.out.println("비밀번호가 일치합니다.");
 				guestbookDao.deleteGuest(no);
 			} 
 			else {
 				System.out.println("비밀번호가 다릅니다.");
 			}
 			
-			response.sendRedirect("/guestbook2/gbc?action=addList");
+			// redirect
+			response.sendRedirect("/guestbook2/gbc");
+			
 		}
-		else {
-			System.out.println("파라미터 값 없음");
+		else { // 리스트를 기본 값으로
+			
+			GuestbookDao guestbookDao = new GuestbookDao();
+			List<GuestbookVo> list = guestbookDao.getList();
+			
+			request.setAttribute("gList", list);
+			
+			// forward
+			WebUtil.forward(request, response, "/WEB-INF/addList.jsp");
+			
 		}
 	}
 
