@@ -68,7 +68,8 @@ public class GuestbookController extends HttpServlet {
 				System.out.println("비밀번호가 일치합니다.");
 				
 				guestbookDao.deleteGuest(no);
-			} else {
+			} 
+			else {
 				System.out.println("비밀번호가 다릅니다.");
 			}
 			
